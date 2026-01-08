@@ -1,0 +1,2362 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!--
+    Zero-Harm & Anti-Inversion Note:
+    This page is designed to encourage ethical reflection and prosocial action. It avoids coercion, targeting, harassment, doxxing,
+    manipulation, or any instructions that could be repurposed to harm people or institutions. All data stays local unless you explicitly
+    export it yourself. No hidden analytics. No auto-send. Safety > spectacle.
+  -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="dark light" />
+  <title>WhaleShift 🐋💛 — Incentives for Caring</title>
+  <style>
+    /* =========================================================
+       WhaleShift — Single-file, offline-first, zero-telemetry UI
+       Tooltip: This CSS is modular. Search for "SECTION:" to extend.
+       Outcome: A calm, readable page with parallax sections, HUD, and print styles.
+    ========================================================= */
+
+    :root{
+      --bg: #070A10;
+      --panel: rgba(255,255,255,.06);
+      --panel2: rgba(255,255,255,.10);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --faint: rgba(255,255,255,.45);
+      --accent: #7ee787;  /* green-ish */
+      --accent2: #6cb6ff; /* blue-ish */
+      --warn: #ffcc66;
+      --danger: #ff6b6b;
+      --shadow: 0 16px 48px rgba(0,0,0,.45);
+      --radius: 18px;
+      --radius2: 24px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      --maxw: 1100px;
+      --navh: 62px;
+    }
+
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg: #f6f7fb;
+        --panel: rgba(0,0,0,.05);
+        --panel2: rgba(0,0,0,.08);
+        --text: rgba(0,0,0,.88);
+        --muted: rgba(0,0,0,.66);
+        --faint: rgba(0,0,0,.45);
+        --shadow: 0 16px 48px rgba(0,0,0,.12);
+      }
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--font);
+      background: radial-gradient(1000px 600px at 20% -10%, rgba(108,182,255,.18), transparent 60%),
+                  radial-gradient(900px 500px at 90% 10%, rgba(126,231,135,.16), transparent 55%),
+                  radial-gradient(900px 700px at 50% 110%, rgba(255,204,102,.10), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+      overflow-x:hidden;
+    }
+
+    a{color:inherit; text-decoration:none}
+    a:hover{text-decoration:underline}
+    button, input, textarea, select{
+      font:inherit;
+      color:inherit;
+      background:transparent;
+    }
+
+    /* SECTION: Splash */
+    .splash{
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      background:
+        radial-gradient(900px 500px at 30% 30%, rgba(108,182,255,.18), transparent 55%),
+        radial-gradient(900px 500px at 70% 40%, rgba(126,231,135,.16), transparent 55%),
+        linear-gradient(180deg, rgba(0,0,0,.65), rgba(0,0,0,.82));
+      backdrop-filter: blur(8px);
+    }
+    .splashCard{
+      width:min(760px, 92vw);
+      border-radius: var(--radius2);
+      background: rgba(255,255,255,.06);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.12);
+      padding:22px 20px;
+      position:relative;
+      overflow:hidden;
+    }
+    .splashCard:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(600px 240px at 20% 0%, rgba(108,182,255,.22), transparent 60%),
+        radial-gradient(600px 240px at 80% 0%, rgba(126,231,135,.20), transparent 60%);
+      opacity:.7;
+      pointer-events:none;
+    }
+    .splashInner{position:relative; z-index:1}
+    .splashTitle{
+      display:flex; align-items:center; gap:10px;
+      font-weight:800;
+      letter-spacing:.2px;
+      font-size: clamp(22px, 3.4vw, 34px);
+      margin:0 0 8px;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      font-size:12px;
+      color:var(--muted);
+    }
+    .splashText{margin:10px 0 16px; color:var(--muted); line-height:1.5}
+    .barWrap{
+      height:10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.10);
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .bar{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(108,182,255,.9), rgba(126,231,135,.9));
+      border-radius:999px;
+      transition: width .3s ease;
+    }
+    .splashRow{
+      display:flex; gap:10px; flex-wrap:wrap;
+      align-items:center; justify-content:space-between;
+      margin-top:14px;
+    }
+    .btn{
+      cursor:pointer;
+      border-radius: 14px;
+      padding: 10px 12px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      box-shadow: 0 10px 24px rgba(0,0,0,.25);
+      transition: transform .06s ease, background .15s ease, border-color .15s ease;
+      user-select:none;
+    }
+    .btn:hover{background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.22)}
+    .btn:active{transform: translateY(1px)}
+    .btnPrimary{
+      background: linear-gradient(135deg, rgba(108,182,255,.35), rgba(126,231,135,.28));
+      border-color: rgba(255,255,255,.20);
+    }
+    .btnSmall{padding:8px 10px; border-radius: 12px; font-size: 13px}
+    .muted{color:var(--muted)}
+    .mono{font-family:var(--mono)}
+
+    /* SECTION: Sticky nav */
+    header{
+      position:sticky; top:0; z-index:50;
+      height: var(--navh);
+      display:flex; align-items:center;
+      background: rgba(0,0,0,.30);
+      border-bottom:1px solid rgba(255,255,255,.10);
+      backdrop-filter: blur(10px);
+    }
+    @media (prefers-color-scheme: light){
+      header{background: rgba(255,255,255,.55)}
+    }
+    .nav{
+      width:min(var(--maxw), 94vw);
+      margin:0 auto;
+      display:flex; align-items:center; gap:12px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:800;
+      letter-spacing:.2px;
+      white-space:nowrap;
+    }
+    .brandMark{
+      width:34px;height:34px;border-radius:12px;
+      background: radial-gradient(circle at 30% 30%, rgba(108,182,255,.7), rgba(126,231,135,.3));
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow: 0 10px 24px rgba(0,0,0,.25);
+      display:grid; place-items:center;
+    }
+    .brandMark span{filter: drop-shadow(0 8px 12px rgba(0,0,0,.4))}
+    .navLinks{
+      display:flex; gap:10px; flex-wrap:wrap;
+      align-items:center;
+      margin-left:auto;
+    }
+    .navLinks a, .navLinks button{
+      font-size:13px;
+      padding:8px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      cursor:pointer;
+    }
+    .navLinks a:hover, .navLinks button:hover{
+      background: rgba(255,255,255,.08);
+      border-color: rgba(255,255,255,.18);
+      text-decoration:none;
+    }
+
+    /* SECTION: Layout */
+    main{
+      width:min(var(--maxw), 94vw);
+      margin: 18px auto 80px;
+    }
+    .hero{
+      margin-top:16px;
+      border-radius: var(--radius2);
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .hero:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(900px 320px at 20% 10%, rgba(108,182,255,.18), transparent 62%),
+        radial-gradient(900px 340px at 80% 10%, rgba(126,231,135,.16), transparent 62%),
+        radial-gradient(900px 520px at 50% 130%, rgba(255,204,102,.10), transparent 62%);
+      pointer-events:none;
+    }
+    .heroInner{
+      position:relative; z-index:1;
+      padding: 22px;
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap:18px;
+      align-items:stretch;
+    }
+    @media (max-width: 960px){
+      .heroInner{grid-template-columns: 1fr}
+    }
+    .hero h1{
+      margin:0 0 8px;
+      font-size: clamp(24px, 3.6vw, 44px);
+      letter-spacing:.2px;
+    }
+    .hero p{margin:0; color:var(--muted); line-height:1.6}
+    .card{
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      padding: 14px;
+      box-shadow: 0 10px 26px rgba(0,0,0,.25);
+    }
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    @media (max-width: 900px){
+      .grid2{grid-template-columns: 1fr}
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .kpi{
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:6px 10px;
+      align-items:baseline;
+    }
+    .kpi .label{color:var(--muted); font-size:12px}
+    .kpi .value{font-weight:800; font-size:18px}
+    .divider{height:1px; background: rgba(255,255,255,.10); margin:12px 0}
+
+    /* SECTION: Parallax sections */
+    .section{
+      margin-top: 16px;
+      border-radius: var(--radius2);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .section .bg{
+      position:absolute; inset:-40px;
+      transform: translate3d(0,0,0);
+      background:
+        radial-gradient(900px 520px at 18% 30%, rgba(108,182,255,.14), transparent 60%),
+        radial-gradient(900px 520px at 86% 34%, rgba(126,231,135,.12), transparent 60%),
+        radial-gradient(900px 560px at 50% 120%, rgba(255,204,102,.10), transparent 60%);
+      filter: blur(0px);
+      opacity:.9;
+      pointer-events:none;
+    }
+    .sectionInner{
+      position:relative; z-index:1;
+      padding: 18px 18px 14px;
+    }
+    .sectionTitle{
+      display:flex; align-items:baseline; justify-content:space-between;
+      gap:12px; flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    .sectionTitle h2{
+      margin:0;
+      font-size: clamp(18px, 2.5vw, 28px);
+    }
+    .sectionTitle .hint{color:var(--muted); font-size:13px}
+
+    /* SECTION: Collapsibles */
+    details{
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      padding: 10px 12px;
+      margin: 10px 0;
+    }
+    summary{
+      cursor:pointer;
+      list-style:none;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px;
+      font-weight:700;
+      user-select:none;
+    }
+    summary::-webkit-details-marker{display:none}
+    .detailsBody{
+      margin-top:10px;
+      color:var(--muted);
+      line-height:1.65;
+    }
+    .tagRow{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+    .tag{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color:var(--muted);
+      white-space:nowrap;
+    }
+
+    /* SECTION: Inputs */
+    .field{
+      display:grid;
+      gap:6px;
+      margin: 10px 0;
+    }
+    .field label{font-size:12px; color:var(--muted)}
+    .input, textarea, select{
+      width:100%;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      padding: 10px 12px;
+      outline:none;
+    }
+    textarea{min-height: 90px; resize: vertical}
+    .input:focus, textarea:focus, select:focus{
+      border-color: rgba(108,182,255,.45);
+      box-shadow: 0 0 0 4px rgba(108,182,255,.12);
+    }
+
+    /* SECTION: Search results */
+    .results{
+      display:grid;
+      gap:10px;
+      margin-top: 10px;
+    }
+    .result{
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      padding: 12px;
+    }
+    .result h3{
+      margin:0 0 6px;
+      font-size: 15px;
+      letter-spacing:.2px;
+    }
+    .result p{margin:0; color:var(--muted); line-height:1.5}
+    .result .meta{
+      margin-top:8px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      color:var(--faint);
+      font-size:12px;
+    }
+
+    /* SECTION: HUD */
+    .hud{
+      position:fixed;
+      right: 14px;
+      bottom: 14px;
+      z-index:60;
+      width: min(340px, 92vw);
+      border-radius: 20px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.40);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    @media (prefers-color-scheme: light){
+      .hud{background: rgba(255,255,255,.62)}
+    }
+    .hudTop{
+      padding:10px 12px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .hudTitle{
+      display:flex; flex-direction:column;
+      gap:2px;
+    }
+    .hudTitle strong{font-size:13px}
+    .hudTitle span{font-size:12px; color:var(--muted)}
+    .hudBody{padding:10px 12px}
+    .hudGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      align-items:stretch;
+    }
+    .hudMini{
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      padding:10px;
+    }
+    .hudMini .t{font-size:12px; color:var(--muted)}
+    .hudMini .v{font-weight:900; font-size:18px; margin-top:4px}
+    .hudActions{
+      margin-top:10px;
+      display:flex; gap:8px; flex-wrap:wrap;
+    }
+    .hudActions .btn{
+      box-shadow:none;
+      border-radius: 999px;
+      padding:8px 10px;
+      font-size:12px;
+    }
+
+    /* SECTION: Constellation */
+    .constellationWrap{
+      margin-top: 10px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      overflow:hidden;
+    }
+    canvas{display:block; width:100%; height: 170px}
+    .constellationLegend{
+      padding:8px 10px;
+      border-top:1px solid rgba(255,255,255,.10);
+      font-size:12px;
+      color:var(--muted);
+      display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    }
+
+    /* SECTION: Footer */
+    footer{
+      width:min(var(--maxw), 94vw);
+      margin: 20px auto 50px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      border-top: 1px solid rgba(255,255,255,.10);
+      padding-top: 14px;
+    }
+    .footerGrid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+    }
+    @media (max-width: 900px){
+      .footerGrid{grid-template-columns: 1fr}
+    }
+    .tiny{font-size:11px; color: var(--faint)}
+    .kbd{
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--muted);
+    }
+
+    /* SECTION: Print */
+    @media print{
+      header, .hud, .splash {display:none !important}
+      body{background:#fff !important; color:#000 !important}
+      .section, .hero, .card, details, .result{
+        box-shadow:none !important;
+        background:#fff !important;
+        border:1px solid #ddd !important;
+      }
+      a{text-decoration:underline}
+    }
+
+    /* SECTION: Utility */
+    .sr{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden}
+    .right{margin-left:auto}
+    .nowrap{white-space:nowrap}
+    .ok{color: var(--accent)}
+    .warn{color: var(--warn)}
+    .danger{color: var(--danger)}
+  </style>
+</head>
+
+<body>
+  <!-- SECTION: Splash Screen
+       Tooltip: Visible on load. Shows offline readiness and first-run steps.
+       How to extend: Edit #splashCopy in JS.
+       Outcome: A friendly "boot sequence" that sets user expectations and safety.
+  -->
+  <div class="splash" id="splash" aria-hidden="false">
+    <div class="splashCard" role="dialog" aria-modal="true" aria-labelledby="splashTitle">
+      <div class="splashInner">
+        <div class="row" style="justify-content:space-between; align-items:flex-start">
+          <div>
+            <div class="splashTitle" id="splashTitle">
+              WhaleShift 🐋💛
+              <span class="pill" title="All data is local; no auto-send.">Offline-first • Local-only</span>
+            </div>
+            <div class="splashText" id="splashCopy">
+              Loading your local dashboard… building a gentle incentive engine that nudges big power toward human care — without coercion.
+            </div>
+          </div>
+          <div class="pill mono" id="bootStatus" title="Boot status">BOOT: …</div>
+        </div>
+        <div class="barWrap" aria-label="Loading progress">
+          <div class="bar" id="bootBar"></div>
+        </div>
+        <div class="splashRow">
+          <div class="muted" style="font-size:12px">
+            Tip: Use <span class="kbd">Ctrl</span>+<span class="kbd">K</span> for search.
+          </div>
+          <div class="row">
+            <button class="btn btnSmall" id="splashReset" title="Resets local data (IndexedDB + cache). No network calls.">Reset local</button>
+            <button class="btn btnPrimary" id="splashEnter" title="Enter the dashboard">Enter →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: Sticky Navigation
+       Tooltip: One-tap access to core zones.
+       Extend: Add anchors + matching sections.
+       Outcome: Easy scanning and quick jumps.
+  -->
+  <header>
+    <div class="nav">
+      <div class="brand">
+        <div class="brandMark" aria-hidden="true"><span>🐋</span></div>
+        <div>
+          <div style="font-size:14px; line-height:1">WhaleShift</div>
+          <div style="font-size:11px; color:var(--muted); line-height:1.1">incentives for caring</div>
+        </div>
+      </div>
+
+      <div class="navLinks" aria-label="Primary navigation">
+        <a href="#playbook" title="Ethical levers that work">Playbook</a>
+        <a href="#messages" title="Write & rehearse messages that reduce defensiveness">Messages</a>
+        <a href="#actions" title="Small actions that compound">Actions</a>
+        <a href="#metrics" title="Local, personal scoring (no judgment)">Metrics</a>
+        <button id="toggleHud" title="Show/hide the HUD">HUD</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- SECTION: Hero -->
+    <section class="hero" id="top">
+      <div class="heroInner">
+        <div class="card" style="background:rgba(255,255,255,.04)">
+          <h1>Change whales by changing incentives 🧠🐋</h1>
+          <p>
+            This is an offline-first toolkit for designing <span class="ok">non-coercive</span> messages and actions that make caring about people
+            <em>strategically attractive</em> to powerful actors — investors, executives, institutions, and networks.
+            It focuses on pro-social incentives: reputation, risk reduction, long-horizon value, and legitimacy.
+          </p>
+          <div class="divider"></div>
+          <div class="row">
+            <span class="pill" title="No hidden tracking.">No telemetry</span>
+            <span class="pill" title="Everything stored locally in IndexedDB.">IndexedDB state</span>
+            <span class="pill" title="Avoids tactics that pressure, shame, or target individuals.">Anti-coercion</span>
+            <span class="pill" title="Search and collapse/expand long-form content.">Long-form</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="kpi">
+            <div class="label">Your “Care Momentum”</div>
+            <div class="value" id="kpiMomentum">0</div>
+
+            <div class="label">Message drafts saved</div>
+            <div class="value" id="kpiDrafts">0</div>
+
+            <div class="label">Actions logged</div>
+            <div class="value" id="kpiActions">0</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="row">
+            <button class="btn btnPrimary" id="quickAddAction" title="Log a small action now (local-only).">+ Log action</button>
+            <button class="btn" id="exportData" title="Export your local state to a JSON file.">Export</button>
+            <label class="btn" for="importFile" title="Import a previously exported JSON file (local-only).">
+              Import <input id="importFile" type="file" accept="application/json" class="sr" />
+            </label>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="field">
+            <label for="globalSearch">Search (sections, levers, message templates, your drafts)</label>
+            <input class="input" id="globalSearch" placeholder="Try: 'risk', 'legitimacy', 'dividends', 'workers', 'climate', 'trust'…" autocomplete="off" />
+          </div>
+
+          <div class="tiny">
+            Local shortcut: <span class="kbd">Ctrl</span>+<span class="kbd">K</span> focuses search • <span class="kbd">Esc</span> clears.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: Playbook (parallax) -->
+    <section class="section" id="playbook" data-parallax="0.25">
+      <div class="bg" aria-hidden="true"></div>
+      <div class="sectionInner">
+        <div class="sectionTitle">
+          <h2>Playbook: pro-social incentives that scale 📈💛</h2>
+          <div class="hint">These levers work because they reduce risk and increase durable legitimacy.</div>
+        </div>
+
+        <details open data-searchable>
+          <summary>
+            <span>1) Legitimacy Dividend (trust is an asset)</span>
+            <span class="tag">reputation</span>
+          </summary>
+          <div class="detailsBody">
+            Powerful actors protect legitimacy because it lowers financing costs, stabilizes customers, and improves regulatory outcomes.
+            Caring about people becomes “profitable” when framed as a <strong>legitimacy dividend</strong>:
+            long-term trust that produces lower churn, better talent retention, and fewer political shocks.
+            <div class="tagRow">
+              <span class="tag">framing</span><span class="tag">long-horizon value</span><span class="tag">brand resilience</span>
+            </div>
+          </div>
+        </details>
+
+        <details data-searchable>
+          <summary>
+            <span>2) Risk Compression (care reduces tail risk)</span>
+            <span class="tag">risk</span>
+          </summary>
+          <div class="detailsBody">
+            The best argument for “care” is often <strong>tail-risk management</strong>: inequality, burnout, instability, and distrust are
+            multiplicative risks. Care policies can compress tails: fewer strikes, fewer PR disasters, fewer supply disruptions,
+            fewer regulatory crackdowns.
+            <div class="tagRow">
+              <span class="tag">insurance logic</span><span class="tag">stability</span><span class="tag">systems thinking</span>
+            </div>
+          </div>
+        </details>
+
+        <details data-searchable>
+          <summary>
+            <span>3) Talent Gravity (humans choose humane systems)</span>
+            <span class="tag">talent</span>
+          </summary>
+          <div class="detailsBody">
+            High performers increasingly avoid “soulless extraction.” Humane design is a talent magnet.
+            Frame care as a <strong>competitive hiring moat</strong> plus retention engine. This is especially strong in AI-heavy labor markets.
+            <div class="tagRow">
+              <span class="tag">retention</span><span class="tag">culture</span><span class="tag">innovation</span>
+            </div>
+          </div>
+        </details>
+
+        <details data-searchable>
+          <summary>
+            <span>4) License to Operate (regulators follow public consent)</span>
+            <span class="tag">policy</span>
+          </summary>
+          <div class="detailsBody">
+            When public consent erodes, regulation arrives like weather.
+            “Care” can be packaged as <strong>voluntary standards</strong>, transparency, and measurable commitments,
+            creating a smoother relationship with oversight — and a more predictable operating environment.
+            <div class="tagRow">
+              <span class="tag">compliance</span><span class="tag">predictability</span><span class="tag">social contract</span>
+            </div>
+          </div>
+        </details>
+
+        <details data-searchable>
+          <summary>
+            <span>5) Narrative Elasticity (avoid the “villain lock-in”)</span>
+            <span class="tag">narrative</span>
+          </summary>
+          <div class="detailsBody">
+            Once an institution is cast as “the villain,” every action is interpreted through that lens.
+            Care practices create <strong>narrative elasticity</strong>: room to act without instant distrust.
+            This isn’t “PR”; it’s rebuilding the interpretive bridge between power and people.
+            <div class="tagRow">
+              <span class="tag">trust repair</span><span class="tag">communication</span><span class="tag">legibility</span>
+            </div>
+          </div>
+        </details>
+
+        <details data-searchable>
+          <summary>
+            <span>6) Stakeholder Flywheel (people become allies, not adversaries)</span>
+            <span class="tag">flywheel</span>
+          </summary>
+          <div class="detailsBody">
+            Care turns external pressure into internal momentum: customers advocate, workers innovate, communities cooperate.
+            Frame it as <strong>ally conversion</strong>: fewer enemies, more collaborators, better information flow.
+            <div class="tagRow">
+              <span class="tag">partnership</span><span class="tag">community</span><span class="tag">shared upside</span>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- SECTION: Messages -->
+    <section class="section" id="messages" data-parallax="0.18">
+      <div class="bg" aria-hidden="true"></div>
+      <div class="sectionInner">
+        <div class="sectionTitle">
+          <h2>Messages: draft care-first incentives ✍️🧭</h2>
+          <div class="hint">No targeting. No shaming. Write to a role, not a person.</div>
+        </div>
+
+        <div class="grid2">
+          <div class="card">
+            <div class="field">
+              <label for="audienceRole">Audience role (generic)</label>
+              <select id="audienceRole" class="input" title="Pick a generic role. Avoid names.">
+                <option value="Institutional Investor">Institutional Investor</option>
+                <option value="Executive / Board Member">Executive / Board Member</option>
+                <option value="Policy / Regulator">Policy / Regulator</option>
+                <option value="Founder / Operator">Founder / Operator</option>
+                <option value="Community / Public">Community / Public</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="lever">Primary lever</label>
+              <select id="lever" class="input" title="Choose the incentive frame.">
+                <option value="Legitimacy Dividend">Legitimacy Dividend</option>
+                <option value="Risk Compression">Risk Compression</option>
+                <option value="Talent Gravity">Talent Gravity</option>
+                <option value="License to Operate">License to Operate</option>
+                <option value="Narrative Elasticity">Narrative Elasticity</option>
+                <option value="Stakeholder Flywheel">Stakeholder Flywheel</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="goal">Goal (what care looks like)</label>
+              <input id="goal" class="input" maxlength="160"
+                     placeholder="Example: fund worker stability, protect customers, reduce harm, improve fairness…"
+                     title="Keep it concrete and non-violent. Avoid threats." />
+              <div class="tiny">Max 160 chars. Inputs are sanitized and stored locally.</div>
+            </div>
+
+            <div class="row">
+              <button class="btn btnPrimary" id="generateTemplate" title="Generate a draft using safe persuasion patterns (no coercion).">Generate draft</button>
+              <button class="btn" id="saveDraft" title="Save the current draft to your local library.">Save</button>
+              <button class="btn" id="clearDraft" title="Clear the editor.">Clear</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="field">
+              <label for="draftText">Draft (editable)</label>
+              <textarea id="draftText" placeholder="Your draft will appear here…" title="Write calmly; focus on shared incentives and measurable commitments."></textarea>
+              <div class="tiny">
+                Safety tip: avoid “you people” language. Use “we” and measurable outcomes. Keep it role-based, not personal.
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="row">
+              <button class="btn" id="copyDraft" title="Copy draft to clipboard (if supported).">Copy</button>
+              <button class="btn" id="scoreDraft" title="Quick-check the draft for coercive tone.">Tone check</button>
+              <span class="pill" id="toneBadge" title="Tone evaluation is local and heuristic.">Tone: —</span>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="tiny">
+              Pattern used: <span class="kbd">Acknowledge</span> → <span class="kbd">Align incentives</span> → <span class="kbd">Offer measurable care</span> → <span class="kbd">Invite collaboration</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <h3 style="margin:10px 0 6px; font-size:16px">Your saved drafts (local)</h3>
+        <div class="results" id="draftList" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- SECTION: Actions -->
+    <section class="section" id="actions" data-parallax="0.14">
+      <div class="bg" aria-hidden="true"></div>
+      <div class="sectionInner">
+        <div class="sectionTitle">
+          <h2>Actions: small moves, compounding effects 🪴</h2>
+          <div class="hint">Focus on positive-sum nudges: transparency, standards, community benefit.</div>
+        </div>
+
+        <details open data-searchable>
+          <summary><span>Action Ladder (choose your rung)</span><span class="tag">ladder</span></summary>
+          <div class="detailsBody">
+            <div class="grid2">
+              <div class="card">
+                <strong>Rung 1 — Personal clarity</strong>
+                <p class="muted" style="margin:6px 0 0">
+                  Write one calm, measurable “care ask.” Avoid outrage loops. Build a repeatable script.
+                </p>
+                <div class="tagRow">
+                  <span class="tag">low friction</span><span class="tag">repeatable</span>
+                </div>
+              </div>
+              <div class="card">
+                <strong>Rung 2 — Community signals</strong>
+                <p class="muted" style="margin:6px 0 0">
+                  Support transparent, care-forward standards: fair wages, safe products, clear audits.
+                </p>
+                <div class="tagRow">
+                  <span class="tag">coalitions</span><span class="tag">standards</span>
+                </div>
+              </div>
+              <div class="card">
+                <strong>Rung 3 — Institutional language</strong>
+                <p class="muted" style="margin:6px 0 0">
+                  Translate care into board-ready metrics: retention, incident rates, trust indexes, tail-risk reduction.
+                </p>
+                <div class="tagRow">
+                  <span class="tag">metrics</span><span class="tag">governance</span>
+                </div>
+              </div>
+              <div class="card">
+                <strong>Rung 4 — Durable commitments</strong>
+                <p class="muted" style="margin:6px 0 0">
+                  Advocate for measurable commitments with public reporting — avoiding punitive framing.
+                </p>
+                <div class="tagRow">
+                  <span class="tag">transparency</span><span class="tag">accountability</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <div class="grid2">
+          <div class="card">
+            <h3 style="margin:0 0 6px; font-size:16px">Log an action</h3>
+            <div class="field">
+              <label for="actionType">Type</label>
+              <select id="actionType" class="input" title="Pick a positive-sum action category.">
+                <option value="Drafted a message">Drafted a message</option>
+                <option value="Shared a care metric">Shared a care metric</option>
+                <option value="Supported a transparency standard">Supported a transparency standard</option>
+                <option value="Helped someone directly">Helped someone directly</option>
+                <option value="Learned (risk, governance, ethics)">Learned (risk, governance, ethics)</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="actionNote">Note (optional, local)</label>
+              <input id="actionNote" class="input" maxlength="140" placeholder="What did you do, in one sentence?" />
+            </div>
+
+            <div class="row">
+              <button class="btn btnPrimary" id="addAction" title="Save this action locally.">Add</button>
+              <button class="btn" id="clearActions" title="Clear action log (local).">Clear log</button>
+            </div>
+
+            <div class="tiny" style="margin-top:10px">
+              Gentle rate limits apply to prevent spam clicks. Everything stays on device.
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 style="margin:0 0 6px; font-size:16px">Action log</h3>
+            <div class="results" id="actionList" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: Metrics -->
+    <section class="section" id="metrics" data-parallax="0.12">
+      <div class="bg" aria-hidden="true"></div>
+      <div class="sectionInner">
+        <div class="sectionTitle">
+          <h2>Metrics: gamify care (without turning humans into points) 🎛️✨</h2>
+          <div class="hint">Score the process, not people.</div>
+        </div>
+
+        <div class="grid2">
+          <div class="card">
+            <h3 style="margin:0 0 6px; font-size:16px">Your Care Engine settings</h3>
+
+            <div class="field">
+              <label for="careStyle">Care style</label>
+              <select id="careStyle" class="input" title="Affects suggested phrasing and scoring weights.">
+                <option value="Calm & analytical">Calm & analytical</option>
+                <option value="Warm & relational">Warm & relational</option>
+                <option value="Civic & policy-minded">Civic & policy-minded</option>
+                <option value="Pragmatic & operational">Pragmatic & operational</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="dailyGoal">Daily micro-goal (1–10)</label>
+              <input id="dailyGoal" class="input" type="number" min="1" max="10" step="1" value="3"
+                     title="Set a small daily target. Lower is often better." />
+              <div class="tiny">This is for you, not for judging others.</div>
+            </div>
+
+            <div class="row">
+              <button class="btn btnPrimary" id="saveSettings" title="Save preferences locally.">Save settings</button>
+              <button class="btn" id="resetSettings" title="Reset preferences to defaults.">Reset</button>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="kpi">
+              <div class="label">Streak (actions logged on consecutive days)</div>
+              <div class="value" id="kpiStreak">0</div>
+
+              <div class="label">Care Momentum (rolling)</div>
+              <div class="value" id="kpiMomentum2">0</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 style="margin:0 0 6px; font-size:16px">Constellation (local state visualizer)</h3>
+            <p class="muted" style="margin:0 0 8px; line-height:1.5">
+              Each “star” is a safe signal: drafts saved, actions logged, days in streak, tone quality.
+              This is a vibe-meter, not surveillance. 🌌
+            </p>
+
+            <div class="constellationWrap">
+              <canvas id="constellation" width="720" height="170" aria-label="Constellation visualizer"></canvas>
+              <div class="constellationLegend">
+                <span>Stars grow with momentum</span>
+                <span class="mono" id="constellationReadout">—</span>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <details data-searchable>
+              <summary><span>How this avoids coercion</span><span class="tag">safety</span></summary>
+              <div class="detailsBody">
+                This toolkit avoids harassment, targeting, threats, or manipulation. It’s built around:
+                <strong>shared incentives</strong>, <strong>measurable commitments</strong>, and <strong>inviting collaboration</strong>.
+                No lists of “enemies,” no doxxing, no pressure tactics, no instructions to disrupt systems.
+                If you feel anger rising, pause — and write for long-horizon stability instead.
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <h3 style="margin:10px 0 6px; font-size:16px">Search results</h3>
+        <div class="results" id="searchResults" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- SECTION: HUD -->
+  <aside class="hud" id="hud" aria-label="Gamification HUD">
+    <div class="hudTop">
+      <div class="hudTitle">
+        <strong>Care HUD</strong>
+        <span id="hudSubtitle">Local-only • No telemetry</span>
+      </div>
+      <button class="btn btnSmall" id="hudMinimize" title="Minimize HUD">—</button>
+    </div>
+    <div class="hudBody" id="hudBody">
+      <div class="hudGrid">
+        <div class="hudMini" title="Rolling momentum, increases with drafts/actions, decays gently over time.">
+          <div class="t">Momentum</div>
+          <div class="v" id="hudMomentum">0</div>
+        </div>
+        <div class="hudMini" title="Current streak of days with at least one action logged.">
+          <div class="t">Streak</div>
+          <div class="v" id="hudStreak">0</div>
+        </div>
+      </div>
+
+      <div class="hudActions">
+        <button class="btn btnSmall btnPrimary" id="hudQuickDraft" title="Jump to message drafting">Draft</button>
+        <button class="btn btnSmall" id="hudQuickAction" title="Log a small action now">Log</button>
+        <button class="btn btnSmall" id="hudFocusSearch" title="Focus search input">Search</button>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="tiny">
+        “Care that scales” = incentives + measurement + empathy. Not vibes-only. Not force. 🧠💛
+      </div>
+    </div>
+  </aside>
+
+  <!-- SECTION: Footer -->
+  <footer>
+    <div class="footerGrid">
+      <div>
+        <strong>Zero-Harm & Anti-Inversion</strong><br/>
+        This page is built to promote care and stability without coercion or targeting. No hidden analytics. No auto-send features.
+        Data stays on your device unless you export it. If a tactic feels like pressure, it’s probably counterproductive. Choose long-horizon trust. 💛
+        <div class="tiny" style="margin-top:8px">
+          Safety design: sanitization • gentle rate limits • local-only storage • no external dependencies.
+        </div>
+      </div>
+      <div>
+        <strong>Attributions & Licensing</strong><br/>
+        Design patterns inspired by common open UI conventions (sticky nav, collapsibles, offline-first caching concepts, local export/import).
+        No third-party code copied. No external libraries used. You can reuse/modify this file freely in your own projects.
+        <div class="tiny" style="margin-top:8px">
+          Tip: Save as <span class="kbd">index.html</span>. Works offline after first load (service worker).
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <noscript>
+    <div style="padding:14px; margin: 16px auto; width:min(900px, 94vw); border:1px solid #ccc; border-radius: 14px;">
+      <strong>JavaScript is disabled.</strong>
+      This page needs JavaScript for offline storage, search, and the HUD. You can still read the content above, but interactive features won’t run.
+    </div>
+  </noscript>
+
+  <script>
+  /* =========================================================
+     WhaleShift — JS (Offline-first, IndexedDB, Search, HUD, SW)
+     Tooltip: All logic is local-only. No network calls besides optional SW caching.
+     Extend: Add new sections with data-searchable, and they will be indexed.
+     Outcome: Draft creation, safe tone checks, action logging, visual constellation.
+  ========================================================= */
+
+  (function(){
+    "use strict";
+
+    /* ---------------------------
+       SECTION: Helpers (sanitization, rate-limits)
+       Tooltip: Prevents injection + spam clicking.
+       Extend: Add sanitize rules for new input fields.
+       Outcome: Safer UI with no unsafe HTML insertion.
+    --------------------------- */
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+    function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+    function nowISO(){ return new Date().toISOString(); }
+
+    // Basic sanitization for user inputs (kept plain-text)
+    function sanitizeText(s, maxLen=2000){
+      if (typeof s !== "string") return "";
+      // Remove control chars except newline/tab
+      s = s.replace(/[^\x09\x0A\x0D\x20-\x7E\u00A0-\uFFFF]/g, "");
+      // Collapse weird whitespace
+      s = s.replace(/\s{3,}/g, "  ");
+      s = s.trim();
+      if (s.length > maxLen) s = s.slice(0, maxLen);
+      return s;
+    }
+
+    // Safe text to DOM (never innerHTML from user)
+    function setText(el, txt){ el.textContent = txt; }
+
+    // Gentle rate limiter for clicky actions
+    function makeLimiter(minMs){
+      let last = 0;
+      return function(){
+        const t = Date.now();
+        if (t - last < minMs) return false;
+        last = t;
+        return true;
+      };
+    }
+    const allowFast = makeLimiter(450);
+    const allowMedium = makeLimiter(900);
+
+    /* ---------------------------
+       SECTION: IndexedDB (local state)
+       Tooltip: Stores drafts/actions/settings offline.
+       Extend: Add stores + version upgrades.
+       Outcome: Persistent local dashboard.
+    --------------------------- */
+    const DB_NAME = "whaleshift_db";
+    const DB_VER = 1;
+    const STORES = {
+      drafts: "drafts",
+      actions: "actions",
+      settings: "settings",
+      meta: "meta"
+    };
+
+    let db = null;
+
+    function idbOpen(){
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open(DB_NAME, DB_VER);
+        req.onupgradeneeded = (ev) => {
+          const d = req.result;
+
+          if (!d.objectStoreNames.contains(STORES.drafts)){
+            const s = d.createObjectStore(STORES.drafts, { keyPath: "id" });
+            s.createIndex("byCreated", "createdAt", { unique:false });
+          }
+          if (!d.objectStoreNames.contains(STORES.actions)){
+            const s = d.createObjectStore(STORES.actions, { keyPath: "id" });
+            s.createIndex("byWhen", "when", { unique:false });
+          }
+          if (!d.objectStoreNames.contains(STORES.settings)){
+            d.createObjectStore(STORES.settings, { keyPath: "key" });
+          }
+          if (!d.objectStoreNames.contains(STORES.meta)){
+            d.createObjectStore(STORES.meta, { keyPath: "key" });
+          }
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    function tx(store, mode="readonly"){
+      const t = db.transaction(store, mode);
+      return t.objectStore(store);
+    }
+
+    function idbPut(store, value){
+      return new Promise((resolve, reject) => {
+        const req = tx(store, "readwrite").put(value);
+        req.onsuccess = () => resolve(true);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    function idbGet(store, key){
+      return new Promise((resolve, reject) => {
+        const req = tx(store).get(key);
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    function idbDel(store, key){
+      return new Promise((resolve, reject) => {
+        const req = tx(store, "readwrite").delete(key);
+        req.onsuccess = () => resolve(true);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    function idbAll(store, indexName=null){
+      return new Promise((resolve, reject) => {
+        const storeObj = tx(store);
+        const req = indexName ? storeObj.index(indexName).getAll() : storeObj.getAll();
+        req.onsuccess = () => resolve(req.result || []);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function idbClearAll(){
+      // Clear the DB entirely (local reset)
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.deleteDatabase(DB_NAME);
+        req.onsuccess = () => resolve(true);
+        req.onerror = () => reject(req.error);
+        req.onblocked = () => resolve(false);
+      });
+    }
+
+    /* ---------------------------
+       SECTION: Service Worker (offline cache)
+       Tooltip: Caches this single file for offline use.
+       Extend: Add caching for local assets if you embed more.
+       Outcome: Works offline after first load.
+    --------------------------- */
+    async function registerSW(){
+      if (!("serviceWorker" in navigator)) return { ok:false, reason:"no-sw" };
+      try{
+        const swCode = `
+          const CACHE = "whaleshift_cache_v1";
+          self.addEventListener("install", (e) => {
+            e.waitUntil((async()=>{
+              const cache = await caches.open(CACHE);
+              // Cache the main document; fallback to network if blocked.
+              try { await cache.addAll(["./"]); } catch(e){}
+              self.skipWaiting();
+            })());
+          });
+          self.addEventListener("activate", (e) => {
+            e.waitUntil((async()=>{
+              const keys = await caches.keys();
+              await Promise.all(keys.map(k => k===CACHE ? null : caches.delete(k)));
+              self.clients.claim();
+            })());
+          });
+          self.addEventListener("fetch", (e) => {
+            const req = e.request;
+            if (req.method !== "GET") return;
+            e.respondWith((async()=>{
+              const cache = await caches.open(CACHE);
+              const cached = await cache.match(req, { ignoreSearch:true });
+              if (cached) return cached;
+              try{
+                const res = await fetch(req);
+                // Cache same-origin documents only
+                if (res && res.ok && new URL(req.url).origin === self.location.origin){
+                  cache.put(req, res.clone());
+                }
+                return res;
+              }catch(err){
+                // Offline fallback: try root
+                const fallback = await cache.match("./", { ignoreSearch:true });
+                return fallback || new Response("Offline. Reload after first online load.", { status: 200, headers:{ "Content-Type":"text/plain" } });
+              }
+            })());
+          });
+        `;
+        const blob = new Blob([swCode], { type:"text/javascript" });
+        const url = URL.createObjectURL(blob);
+        const reg = await navigator.serviceWorker.register(url, { scope:"./" });
+        return { ok:true, reg };
+      }catch(e){
+        return { ok:false, reason: String(e && e.message ? e.message : e) };
+      }
+    }
+
+    /* ---------------------------
+       SECTION: Data Model
+       Tooltip: Structured local objects.
+       Extend: Add fields for new scoring or metadata.
+       Outcome: Clear, consistent storage.
+    --------------------------- */
+    function uid(prefix){
+      return prefix + "_" + Math.random().toString(16).slice(2) + "_" + Date.now().toString(16);
+    }
+
+    const DEFAULT_SETTINGS = {
+      careStyle: "Calm & analytical",
+      dailyGoal: 3,
+      hudHidden: false,
+      hudMinimized: false
+    };
+
+    /* ---------------------------
+       SECTION: Tone Check (local heuristic)
+       Tooltip: Detect coercive/targeting language. Not perfect.
+       Extend: Add more phrases or scoring rules.
+       Outcome: Gentle nudge toward non-coercive messaging.
+    --------------------------- */
+    const COERCIVE = [
+      "or else", "you must", "we will make you", "pay the price", "ruin you", "destroy", "expose you",
+      "shame", "boycott you", "harass", "threat", "we'll come for", "force", "punish"
+    ];
+    const TARGETING = ["his name is", "her name is", "their address", "phone number", "email", "@", "doxx", "dox"];
+    const DEHUMAN = ["vermin", "parasite", "cockroach", "subhuman", "monsters"];
+    const CALM = ["invite", "collaborate", "measurable", "reduce risk", "long-term", "mutual", "shared", "stability", "trust"];
+
+    function toneCheck(text){
+      const t = (text || "").toLowerCase();
+      let score = 0;
+      let flags = [];
+
+      for (const p of COERCIVE){
+        if (t.includes(p)){ score -= 2; flags.push("coercion"); break; }
+      }
+      for (const p of TARGETING){
+        if (t.includes(p)){ score -= 3; flags.push("targeting"); break; }
+      }
+      for (const p of DEHUMAN){
+        if (t.includes(p)){ score -= 4; flags.push("dehumanizing"); break; }
+      }
+      let calmHits = 0;
+      for (const p of CALM){
+        if (t.includes(p)) calmHits++;
+      }
+      score += Math.min(3, calmHits);
+
+      // Soft penalty for ALL CAPS yelling
+      const caps = (text.match(/[A-Z]/g) || []).length;
+      const letters = (text.match(/[A-Za-z]/g) || []).length || 1;
+      const capRatio = caps / letters;
+      if (capRatio > 0.55 && letters > 40){ score -= 1; flags.push("shouty"); }
+
+      // Determine label
+      let label = "✅ Calm";
+      let color = "ok";
+      if (score <= -4){ label = "⛔ Coercive"; color = "danger"; }
+      else if (score <= -1){ label = "⚠️ Risky"; color = "warn"; }
+
+      return { score, flags, label, color };
+    }
+
+    /* ---------------------------
+       SECTION: Message Template Generator
+       Tooltip: Generates a draft using safe persuasion patterns.
+       Extend: Add more role-specific patterns.
+       Outcome: Quick starting drafts that reduce defensiveness.
+    --------------------------- */
+    function templateFor(role, lever, goal, careStyle){
+      const g = goal ? goal : "a measurable commitment that improves people’s stability and trust";
+      const style = careStyle || DEFAULT_SETTINGS.careStyle;
+
+      const openers = {
+        "Calm & analytical": [
+          "I’m writing in a stability-first spirit.",
+          "This is a pragmatic note about long-horizon resilience."
+        ],
+        "Warm & relational": [
+          "I’m writing with respect for the weight of your decisions.",
+          "I’m reaching out human-to-human, in good faith."
+        ],
+        "Civic & policy-minded": [
+          "I’m writing from a civic stability perspective.",
+          "This is about strengthening the social contract through measurable care."
+        ],
+        "Pragmatic & operational": [
+          "I’m writing operationally: what reduces risk and improves outcomes.",
+          "This is a practical proposal for lowering friction and increasing trust."
+        ]
+      };
+
+      const leverLines = {
+        "Legitimacy Dividend": "Care is not a cost center; it’s a legitimacy dividend that lowers financing friction and strengthens demand over time.",
+        "Risk Compression": "Care compresses tail risk: fewer shocks, fewer conflicts, fewer expensive surprises that damage long-term value.",
+        "Talent Gravity": "Humane systems attract and retain the kind of talent that builds durable innovation rather than short-lived extraction.",
+        "License to Operate": "Public consent shapes regulation. Transparent care improves predictability and reduces adversarial policy cycles.",
+        "Narrative Elasticity": "When trust is thin, every move is misread. Demonstrable care restores interpretive space and lowers conflict temperature.",
+        "Stakeholder Flywheel": "When people feel protected, they become collaborators: better information flow, stronger loyalty, and healthier feedback loops."
+      };
+
+      const roleLine = {
+        "Institutional Investor": "As an allocator of capital, you influence which business models become the default for society.",
+        "Executive / Board Member": "As a steward of an organization, you set the tone for what your system rewards: extraction or stewardship.",
+        "Policy / Regulator": "As a guardian of public trust, you can encourage standards that reward long-horizon care without overreach.",
+        "Founder / Operator": "As a builder, you get to choose which incentives your product and culture encode.",
+        "Community / Public": "As a member of the public, you can influence norms by rewarding transparent, care-forward behavior."
+      }[role] || "Your role has leverage over which incentives dominate.";
+
+      const ask = [
+        `A concrete next step: adopt or support ${g}.`,
+        "Make it measurable, publish the metric, and review it quarterly.",
+        "Frame it as risk reduction and trust building — not charity, not PR."
+      ];
+
+      const close = [
+        "If you’re open to it, I can share a short, metric-first version that fits a board memo or policy brief.",
+        "Thanks for considering a long-horizon approach that treats people as the foundation of stability."
+      ];
+
+      const pick = (arr) => arr[Math.floor(Math.random()*arr.length)];
+      const opener = pick(openers[style] || openers["Calm & analytical"]);
+      const leverLine = leverLines[lever] || leverLines["Risk Compression"];
+
+      return [
+        `${opener}`,
+        ``,
+        `${roleLine}`,
+        ``,
+        `${leverLine}`,
+        ``,
+        `Request: ${ask.join(" ")}`,
+        ``,
+        `${close.join(" ")}`
+      ].join("\n");
+    }
+
+    /* ---------------------------
+       SECTION: Search Index
+       Tooltip: Indexes text from data-searchable sections and user drafts.
+       Extend: Add data-searchable to new content blocks.
+       Outcome: One search bar for everything.
+    --------------------------- */
+    function collectIndexText(){
+      const blocks = $$("[data-searchable]");
+      const items = [];
+
+      for (const el of blocks){
+        const title = (() => {
+          const sum = el.querySelector("summary");
+          if (sum) return sanitizeText(sum.textContent, 120);
+          const h2 = el.querySelector("h2,h3");
+          return h2 ? sanitizeText(h2.textContent, 120) : "Section";
+        })();
+
+        const text = sanitizeText(el.textContent, 4000);
+        const id = el.closest("section")?.id || el.id || "";
+        items.push({ type:"content", title, text, anchor: id ? ("#"+id) : "#top" });
+      }
+      return items;
+    }
+
+    function searchItems(query, baseItems, draftItems){
+      const q = sanitizeText(query, 80).toLowerCase();
+      if (!q) return [];
+      const tokens = q.split(/\s+/).filter(Boolean).slice(0, 8);
+
+      function score(text){
+        let s = 0;
+        const t = text.toLowerCase();
+        for (const tok of tokens){
+          if (t.includes(tok)) s += 2;
+          // small boost for whole-word-ish matches
+          const re = new RegExp("\\b" + tok.replace(/[.*+?^${}()|[\]\\]/g,"\\$&") + "\\b","i");
+          if (re.test(text)) s += 1;
+        }
+        return s;
+      }
+
+      const all = [...baseItems, ...draftItems];
+      const scored = all
+        .map(it => ({ ...it, _s: score(it.title + " " + it.text) }))
+        .filter(it => it._s > 0)
+        .sort((a,b)=> b._s - a._s)
+        .slice(0, 20);
+
+      return scored;
+    }
+
+    /* ---------------------------
+       SECTION: UI Rendering (safe)
+       Tooltip: Creates result cards using textContent only.
+       Extend: Add new card types.
+       Outcome: No XSS, no unsafe HTML injection.
+    --------------------------- */
+    function renderResults(container, items){
+      container.innerHTML = "";
+      if (!items.length){
+        const empty = document.createElement("div");
+        empty.className = "result";
+        const h = document.createElement("h3");
+        setText(h, "No matches yet");
+        const p = document.createElement("p");
+        setText(p, "Try different keywords. This searches the playbook + your drafts.");
+        empty.appendChild(h); empty.appendChild(p);
+        container.appendChild(empty);
+        return;
+      }
+
+      for (const it of items){
+        const card = document.createElement("div");
+        card.className = "result";
+
+        const h = document.createElement("h3");
+        setText(h, it.title || "Result");
+        card.appendChild(h);
+
+        const p = document.createElement("p");
+        const snippet = (it.text || "").replace(/\s+/g," ").slice(0, 220);
+        setText(p, snippet + (it.text && it.text.length > 220 ? "…" : ""));
+        card.appendChild(p);
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        const m1 = document.createElement("span");
+        setText(m1, "Type: " + (it.type || "content"));
+        const m2 = document.createElement("a");
+        m2.href = it.anchor || "#top";
+        setText(m2, "Jump");
+        m2.title = "Jump to relevant section";
+        meta.appendChild(m1);
+        meta.appendChild(m2);
+        card.appendChild(meta);
+
+        container.appendChild(card);
+      }
+    }
+
+    function renderDraftList(drafts){
+      const list = $("#draftList");
+      list.innerHTML = "";
+
+      if (!drafts.length){
+        const empty = document.createElement("div");
+        empty.className = "result";
+        const h = document.createElement("h3");
+        setText(h, "No drafts saved yet");
+        const p = document.createElement("p");
+        setText(p, "Generate a draft, edit it, then hit Save. Drafts remain on-device.");
+        empty.appendChild(h); empty.appendChild(p);
+        list.appendChild(empty);
+        return;
+      }
+
+      drafts
+        .sort((a,b)=> (b.createdAt||"").localeCompare(a.createdAt||""))
+        .forEach(d => {
+          const card = document.createElement("div");
+          card.className = "result";
+
+          const h = document.createElement("h3");
+          setText(h, `${d.role} • ${d.lever}`);
+          card.appendChild(h);
+
+          const p = document.createElement("p");
+          const snippet = (d.text || "").replace(/\s+/g," ").slice(0, 240);
+          setText(p, snippet + ((d.text||"").length>240 ? "…" : ""));
+          card.appendChild(p);
+
+          const meta = document.createElement("div");
+          meta.className = "meta";
+
+          const when = document.createElement("span");
+          setText(when, "Saved: " + new Date(d.createdAt).toLocaleString());
+          meta.appendChild(when);
+
+          const btnUse = document.createElement("button");
+          btnUse.className = "btn btnSmall";
+          setText(btnUse, "Load");
+          btnUse.title = "Load into editor";
+          btnUse.addEventListener("click", () => {
+            $("#audienceRole").value = d.role;
+            $("#lever").value = d.lever;
+            $("#goal").value = d.goal || "";
+            $("#draftText").value = d.text || "";
+            window.location.hash = "#messages";
+            $("#draftText").focus();
+            bumpMomentum(1);
+            toast("Draft loaded ✍️");
+          });
+
+          const btnDel = document.createElement("button");
+          btnDel.className = "btn btnSmall";
+          setText(btnDel, "Delete");
+          btnDel.title = "Delete this draft (local)";
+          btnDel.addEventListener("click", async () => {
+            if (!allowMedium()) return;
+            await idbDel(STORES.drafts, d.id);
+            await refreshAll();
+            toast("Draft deleted 🧹");
+          });
+
+          meta.appendChild(btnUse);
+          meta.appendChild(btnDel);
+
+          card.appendChild(meta);
+          list.appendChild(card);
+        });
+    }
+
+    function renderActionList(actions){
+      const list = $("#actionList");
+      list.innerHTML = "";
+
+      if (!actions.length){
+        const empty = document.createElement("div");
+        empty.className = "result";
+        const h = document.createElement("h3");
+        setText(h, "No actions logged yet");
+        const p = document.createElement("p");
+        setText(p, "Log small, positive steps. This is about momentum, not perfection.");
+        empty.appendChild(h); empty.appendChild(p);
+        list.appendChild(empty);
+        return;
+      }
+
+      actions
+        .sort((a,b)=> (b.when||"").localeCompare(a.when||""))
+        .slice(0, 20)
+        .forEach(a => {
+          const card = document.createElement("div");
+          card.className = "result";
+
+          const h = document.createElement("h3");
+          setText(h, a.type);
+          card.appendChild(h);
+
+          const p = document.createElement("p");
+          setText(p, a.note || "—");
+          card.appendChild(p);
+
+          const meta = document.createElement("div");
+          meta.className = "meta";
+
+          const when = document.createElement("span");
+          setText(when, new Date(a.when).toLocaleString());
+          meta.appendChild(when);
+
+          const btnDel = document.createElement("button");
+          btnDel.className = "btn btnSmall";
+          setText(btnDel, "Delete");
+          btnDel.title = "Delete this action (local)";
+          btnDel.addEventListener("click", async () => {
+            if (!allowMedium()) return;
+            await idbDel(STORES.actions, a.id);
+            await refreshAll();
+            toast("Action removed 🧼");
+          });
+          meta.appendChild(btnDel);
+
+          card.appendChild(meta);
+          list.appendChild(card);
+        });
+    }
+
+    /* ---------------------------
+       SECTION: Momentum + Streak
+       Tooltip: Lightweight gamification without coercion.
+       Extend: Adjust scoring weights.
+       Outcome: Encourages consistent small actions.
+    --------------------------- */
+    function dayKey(iso){
+      const d = new Date(iso);
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,"0");
+      const da = String(d.getDate()).padStart(2,"0");
+      return `${y}-${m}-${da}`;
+    }
+
+    async function computeStreak(actions){
+      // Streak = consecutive days with at least 1 action
+      const days = new Set(actions.map(a => dayKey(a.when)));
+      if (days.size === 0) return 0;
+
+      let streak = 0;
+      const today = new Date();
+      for (let i=0; i<365; i++){
+        const d = new Date(today);
+        d.setDate(today.getDate() - i);
+        const key = dayKey(d.toISOString());
+        if (days.has(key)) streak++;
+        else break;
+      }
+      return streak;
+    }
+
+    async function getMomentum(){
+      const m = await idbGet(STORES.meta, "momentum");
+      return m?.value ?? 0;
+    }
+
+    async function setMomentum(val){
+      await idbPut(STORES.meta, { key:"momentum", value: clamp(Math.round(val), 0, 9999), updatedAt: nowISO() });
+    }
+
+    async function decayMomentum(){
+      // Gentle daily decay: if last update older than ~12h, apply small decay.
+      const m = await idbGet(STORES.meta, "momentum");
+      if (!m) return;
+      const last = new Date(m.updatedAt || m.when || Date.now()).getTime();
+      const ageH = (Date.now() - last) / (1000*60*60);
+      if (ageH < 12) return;
+      const decays = Math.floor(ageH / 12); // every 12h
+      const next = Math.max(0, (m.value||0) - decays);
+      if (next !== (m.value||0)){
+        await setMomentum(next);
+      }
+    }
+
+    async function bumpMomentum(delta){
+      const cur = await getMomentum();
+      await setMomentum(cur + delta);
+      await refreshHUD();
+      await refreshKPIs();
+      drawConstellation();
+    }
+
+    /* ---------------------------
+       SECTION: Settings
+       Tooltip: Local preferences stored in IDB.
+       Extend: Add new keys.
+       Outcome: Personalized behavior.
+    --------------------------- */
+    async function getSettings(){
+      const all = await idbAll(STORES.settings);
+      const map = {};
+      for (const row of all){
+        map[row.key] = row.value;
+      }
+      return { ...DEFAULT_SETTINGS, ...map };
+    }
+
+    async function setSetting(key, value){
+      await idbPut(STORES.settings, { key, value });
+    }
+
+    /* ---------------------------
+       SECTION: Toast (no console errors, no external libs)
+       Tooltip: Tiny feedback popup.
+       Extend: Style if desired.
+       Outcome: Clear user feedback.
+    --------------------------- */
+    let toastTimer = null;
+    function toast(msg){
+      let el = $("#__toast");
+      if (!el){
+        el = document.createElement("div");
+        el.id = "__toast";
+        el.style.position = "fixed";
+        el.style.left = "50%";
+        el.style.bottom = "92px";
+        el.style.transform = "translateX(-50%)";
+        el.style.padding = "10px 12px";
+        el.style.borderRadius = "999px";
+        el.style.border = "1px solid rgba(255,255,255,.16)";
+        el.style.background = "rgba(0,0,0,.55)";
+        el.style.backdropFilter = "blur(10px)";
+        el.style.boxShadow = "0 14px 34px rgba(0,0,0,.30)";
+        el.style.zIndex = "9998";
+        el.style.maxWidth = "92vw";
+        el.style.whiteSpace = "nowrap";
+        el.style.overflow = "hidden";
+        el.style.textOverflow = "ellipsis";
+        document.body.appendChild(el);
+      }
+      setText(el, msg);
+      el.style.opacity = "1";
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=>{ el.style.opacity = "0"; }, 1800);
+    }
+
+    /* ---------------------------
+       SECTION: Parallax
+       Tooltip: Lightweight parallax based on scroll position.
+       Extend: Adjust data-parallax per section.
+       Outcome: Subtle depth effect.
+    --------------------------- */
+    function parallaxTick(){
+      const y = window.scrollY || 0;
+      $$(".section").forEach(sec => {
+        const factor = parseFloat(sec.getAttribute("data-parallax") || "0.12");
+        const bg = sec.querySelector(".bg");
+        if (!bg) return;
+        const rect = sec.getBoundingClientRect();
+        const center = rect.top + rect.height/2;
+        const offset = (center - window.innerHeight/2);
+        const move = -offset * factor * 0.12;
+        bg.style.transform = `translate3d(0, ${move}px, 0)`;
+      });
+    }
+
+    /* ---------------------------
+       SECTION: Constellation Visualizer (Canvas)
+       Tooltip: Draws stars/links from local metrics.
+       Extend: Add new signals to influence nodes.
+       Outcome: Cute "state constellation" map.
+    --------------------------- */
+    function drawConstellation(){
+      const canvas = $("#constellation");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      const w = canvas.width, h = canvas.height;
+
+      // Clear
+      ctx.clearRect(0,0,w,h);
+
+      // Background faint grid
+      ctx.globalAlpha = 0.28;
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "rgba(255,255,255,.10)";
+      for (let x=0; x<w; x+=60){
+        ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke();
+      }
+      for (let y=0; y<h; y+=40){
+        ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+
+      // Read local metrics (cached in DOM if not ready)
+      const momentum = parseInt($("#hudMomentum")?.textContent || "0", 10) || 0;
+      const streak = parseInt($("#hudStreak")?.textContent || "0", 10) || 0;
+      const drafts = parseInt($("#kpiDrafts")?.textContent || "0", 10) || 0;
+      const actions = parseInt($("#kpiActions")?.textContent || "0", 10) || 0;
+      const tone = $("#toneBadge")?.textContent || "Tone: —";
+      const toneScore = (tone.includes("Calm") ? 2 : tone.includes("Risky") ? 0 : tone.includes("Coercive") ? -2 : 1);
+
+      // Nodes
+      const nodes = [
+        { name:"Momentum", v: momentum, x: 110, y: 70 },
+        { name:"Streak", v: streak, x: 250, y: 120 },
+        { name:"Drafts", v: drafts, x: 340, y: 55 },
+        { name:"Actions", v: actions, x: 480, y: 105 },
+        { name:"Tone", v: toneScore, x: 610, y: 70 }
+      ];
+
+      // Scale star size
+      function rFor(n){
+        const base = 4;
+        const add = Math.sqrt(Math.max(0, n))/2.3;
+        return clamp(base + add, 4, 16);
+      }
+
+      // Draw links
+      ctx.strokeStyle = "rgba(255,255,255,.22)";
+      ctx.lineWidth = 1.25;
+      for (let i=0; i<nodes.length; i++){
+        for (let j=i+1; j<nodes.length; j++){
+          const a = nodes[i], b = nodes[j];
+          const dist = Math.hypot(a.x-b.x, a.y-b.y);
+          const strength = clamp((rFor(a.v)+rFor(b.v))/24, 0.12, 0.9);
+          ctx.globalAlpha = strength * (dist < 420 ? 1 : 0.6);
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+      }
+      ctx.globalAlpha = 1;
+
+      // Stars
+      for (const n of nodes){
+        const r = rFor(n.v);
+        // Glow
+        ctx.globalAlpha = 0.20;
+        ctx.fillStyle = "rgba(126,231,135,.55)";
+        if (n.name === "Tone") ctx.fillStyle = "rgba(255,204,102,.60)";
+        if (n.name === "Momentum") ctx.fillStyle = "rgba(108,182,255,.60)";
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, r*2.1, 0, Math.PI*2);
+        ctx.fill();
+
+        // Core
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = "rgba(255,255,255,.85)";
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, r, 0, Math.PI*2);
+        ctx.fill();
+
+        // Label
+        ctx.globalAlpha = 0.75;
+        ctx.fillStyle = "rgba(255,255,255,.72)";
+        ctx.font = "12px " + getComputedStyle(document.body).fontFamily;
+        ctx.fillText(`${n.name}`, n.x - 28, n.y + r + 18);
+        ctx.globalAlpha = 1;
+      }
+
+      const readout = `mom:${momentum} • streak:${streak} • drafts:${drafts} • actions:${actions}`;
+      setText($("#constellationReadout"), readout);
+    }
+
+    /* ---------------------------
+       SECTION: KPIs + HUD sync
+       Tooltip: Updates all numeric displays.
+       Extend: Add additional metrics.
+       Outcome: Consistent UI.
+    --------------------------- */
+    async function refreshKPIs(){
+      const drafts = await idbAll(STORES.drafts);
+      const actions = await idbAll(STORES.actions);
+      await decayMomentum();
+      const momentum = await getMomentum();
+      const streak = await computeStreak(actions);
+
+      setText($("#kpiDrafts"), String(drafts.length));
+      setText($("#kpiActions"), String(actions.length));
+      setText($("#kpiMomentum"), String(momentum));
+      setText($("#kpiMomentum2"), String(momentum));
+      setText($("#kpiStreak"), String(streak));
+    }
+
+    async function refreshHUD(){
+      const actions = await idbAll(STORES.actions);
+      await decayMomentum();
+      const momentum = await getMomentum();
+      const streak = await computeStreak(actions);
+
+      setText($("#hudMomentum"), String(momentum));
+      setText($("#hudStreak"), String(streak));
+
+      // reflect settings
+      const s = await getSettings();
+      const hud = $("#hud");
+      const body = $("#hudBody");
+      if (s.hudHidden){
+        hud.style.display = "none";
+      }else{
+        hud.style.display = "";
+      }
+      if (s.hudMinimized){
+        body.style.display = "none";
+        setText($("#hudMinimize"), "+");
+      }else{
+        body.style.display = "";
+        setText($("#hudMinimize"), "—");
+      }
+    }
+
+    async function refreshAll(){
+      const drafts = await idbAll(STORES.drafts);
+      const actions = await idbAll(STORES.actions);
+      renderDraftList(drafts);
+      renderActionList(actions);
+      await refreshKPIs();
+      await refreshHUD();
+      drawConstellation();
+    }
+
+    /* ---------------------------
+       SECTION: Export / Import (local-only)
+       Tooltip: Backup state safely.
+       Extend: Add new stores to payload.
+       Outcome: Portability without cloud dependency.
+    --------------------------- */
+    async function exportState(){
+      const drafts = await idbAll(STORES.drafts);
+      const actions = await idbAll(STORES.actions);
+      const settings = await idbAll(STORES.settings);
+      const meta = await idbAll(STORES.meta);
+
+      const payload = {
+        schema: "whaleshift.export.v1",
+        exportedAt: nowISO(),
+        drafts, actions, settings, meta
+      };
+
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type:"application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "whaleshift_export.json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    async function importState(file){
+      const text = await file.text();
+      let payload = null;
+      try{
+        payload = JSON.parse(text);
+      }catch(e){
+        toast("Import failed: invalid JSON");
+        return;
+      }
+      if (!payload || payload.schema !== "whaleshift.export.v1"){
+        toast("Import failed: schema mismatch");
+        return;
+      }
+
+      // Safety: sanitize and bound sizes
+      const drafts = Array.isArray(payload.drafts) ? payload.drafts.slice(0, 500) : [];
+      const actions = Array.isArray(payload.actions) ? payload.actions.slice(0, 2000) : [];
+      const settings = Array.isArray(payload.settings) ? payload.settings.slice(0, 50) : [];
+      const meta = Array.isArray(payload.meta) ? payload.meta.slice(0, 50) : [];
+
+      for (const d of drafts){
+        await idbPut(STORES.drafts, {
+          id: sanitizeText(d.id || uid("draft"), 90),
+          role: sanitizeText(d.role || "Institutional Investor", 80),
+          lever: sanitizeText(d.lever || "Risk Compression", 80),
+          goal: sanitizeText(d.goal || "", 180),
+          text: sanitizeText(d.text || "", 8000),
+          createdAt: d.createdAt || nowISO()
+        });
+      }
+      for (const a of actions){
+        await idbPut(STORES.actions, {
+          id: sanitizeText(a.id || uid("act"), 90),
+          type: sanitizeText(a.type || "Helped someone directly", 80),
+          note: sanitizeText(a.note || "", 180),
+          when: a.when || nowISO()
+        });
+      }
+      for (const s of settings){
+        await idbPut(STORES.settings, {
+          key: sanitizeText(s.key || "", 60),
+          value: s.value
+        });
+      }
+      for (const m of meta){
+        await idbPut(STORES.meta, {
+          key: sanitizeText(m.key || "", 60),
+          value: m.value,
+          updatedAt: m.updatedAt || nowISO()
+        });
+      }
+
+      toast("Import complete ✅");
+      await refreshAll();
+    }
+
+    /* ---------------------------
+       SECTION: Global Search UX
+       Tooltip: Searches content + drafts.
+       Extend: Add more indexed text sources.
+       Outcome: Fast findability.
+    --------------------------- */
+    async function runSearch(){
+      const q = $("#globalSearch").value;
+      const base = collectIndexText();
+      const drafts = await idbAll(STORES.drafts);
+
+      const draftItems = drafts.map(d => ({
+        type:"draft",
+        title: `${d.role} • ${d.lever}`,
+        text: sanitizeText((d.goal||"") + " " + (d.text||""), 5000),
+        anchor: "#messages"
+      }));
+
+      const results = searchItems(q, base, draftItems);
+      renderResults($("#searchResults"), results);
+    }
+
+    /* ---------------------------
+       SECTION: Boot Sequence (splash)
+       Tooltip: Friendly progress, SW registration, DB init.
+       Extend: Add more steps.
+       Outcome: No "dead air" on load.
+    --------------------------- */
+    async function boot(){
+      const splash = $("#splash");
+      const bar = $("#bootBar");
+      const status = $("#bootStatus");
+
+      function prog(p, label){
+        bar.style.width = clamp(p, 0, 100) + "%";
+        setText(status, "BOOT: " + label);
+      }
+
+      prog(10, "init");
+      db = await idbOpen();
+      prog(35, "db-ready");
+
+      // Seed defaults if missing
+      const s = await getSettings();
+      await setSetting("careStyle", s.careStyle);
+      await setSetting("dailyGoal", s.dailyGoal);
+      await setSetting("hudHidden", s.hudHidden);
+      await setSetting("hudMinimized", s.hudMinimized);
+
+      prog(55, "settings");
+      const sw = await registerSW();
+      prog(75, sw.ok ? "offline-cache" : "no-sw");
+
+      await refreshAll();
+      prog(92, "render");
+
+      // First run copy tweak
+      const first = await idbGet(STORES.meta, "firstRunDone");
+      if (!first){
+        $("#splashCopy").textContent =
+          "Welcome. This toolkit helps you design incentive-based care messages that powerful systems can accept without defensiveness. Everything stays local. No auto-send. No targeting.";
+        await idbPut(STORES.meta, { key:"firstRunDone", value:true, updatedAt: nowISO() });
+      }
+
+      prog(100, "ready");
+      // Keep splash until user enters (explicit action)
+      splash.style.display = "";
+      splash.setAttribute("aria-hidden","false");
+    }
+
+    /* ---------------------------
+       SECTION: Event wiring
+       Tooltip: Centralized UI interactions.
+       Extend: Add new buttons here.
+       Outcome: Predictable behavior.
+    --------------------------- */
+    function wire(){
+      // Splash controls
+      $("#splashEnter").addEventListener("click", () => {
+        $("#splash").style.display = "none";
+        $("#splash").setAttribute("aria-hidden","true");
+        toast("Ready 🐋💛");
+        setTimeout(()=> parallaxTick(), 50);
+      });
+
+      $("#splashReset").addEventListener("click", async () => {
+        if (!allowMedium()) return;
+        // Attempt SW + cache cleanup
+        try{
+          if ("caches" in window){
+            const keys = await caches.keys();
+            await Promise.all(keys.map(k => caches.delete(k)));
+          }
+          if ("serviceWorker" in navigator){
+            const regs = await navigator.serviceWorker.getRegistrations();
+            await Promise.all(regs.map(r => r.unregister()));
+          }
+        }catch(e){}
+        await idbClearAll();
+        toast("Local data reset. Reloading…");
+        setTimeout(()=> location.reload(), 600);
+      });
+
+      // Keyboard shortcuts
+      window.addEventListener("keydown", (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k"){
+          e.preventDefault();
+          $("#globalSearch").focus();
+        }
+        if (e.key === "Escape"){
+          const el = document.activeElement;
+          if (el && el.id === "globalSearch"){
+            $("#globalSearch").value = "";
+            runSearch();
+            el.blur();
+          }
+        }
+      });
+
+      // Parallax
+      window.addEventListener("scroll", () => requestAnimationFrame(parallaxTick), { passive:true });
+      window.addEventListener("resize", () => requestAnimationFrame(parallaxTick));
+
+      // Search
+      $("#globalSearch").addEventListener("input", () => {
+        if (!allowFast()) return;
+        runSearch();
+      });
+
+      // HUD toggle
+      $("#toggleHud").addEventListener("click", async () => {
+        if (!allowFast()) return;
+        const s = await getSettings();
+        const next = !s.hudHidden;
+        await setSetting("hudHidden", next);
+        await refreshHUD();
+        toast(next ? "HUD hidden" : "HUD shown");
+        drawConstellation();
+      });
+
+      $("#hudMinimize").addEventListener("click", async () => {
+        if (!allowFast()) return;
+        const s = await getSettings();
+        const next = !s.hudMinimized;
+        await setSetting("hudMinimized", next);
+        await refreshHUD();
+        drawConstellation();
+      });
+
+      $("#hudQuickDraft").addEventListener("click", () => {
+        location.hash = "#messages";
+        $("#draftText").focus();
+      });
+      $("#hudQuickAction").addEventListener("click", () => {
+        location.hash = "#actions";
+        $("#actionNote").focus();
+      });
+      $("#hudFocusSearch").addEventListener("click", () => {
+        $("#globalSearch").focus();
+      });
+
+      // Message generator
+      $("#generateTemplate").addEventListener("click", async () => {
+        if (!allowFast()) return;
+        const s = await getSettings();
+        const role = sanitizeText($("#audienceRole").value, 80);
+        const lever = sanitizeText($("#lever").value, 80);
+        const goal = sanitizeText($("#goal").value, 160);
+
+        const draft = templateFor(role, lever, goal, s.careStyle);
+        $("#draftText").value = draft;
+        bumpMomentum(1);
+        toast("Draft generated ✨");
+        // auto tone check
+        const t = toneCheck(draft);
+        const badge = $("#toneBadge");
+        badge.className = "pill " + (t.color || "");
+        badge.textContent = "Tone: " + t.label;
+        drawConstellation();
+      });
+
+      $("#saveDraft").addEventListener("click", async () => {
+        if (!allowMedium()) return;
+        const role = sanitizeText($("#audienceRole").value, 80);
+        const lever = sanitizeText($("#lever").value, 80);
+        const goal = sanitizeText($("#goal").value, 160);
+        const text = sanitizeText($("#draftText").value, 8000);
+
+        if (!text){
+          toast("Nothing to save (draft is empty).");
+          return;
+        }
+
+        const t = toneCheck(text);
+        if (t.label.includes("Coercive")){
+          toast("Not saved: draft looks coercive. Soften it first.");
+          return;
+        }
+
+        const d = {
+          id: uid("draft"),
+          role, lever, goal, text,
+          createdAt: nowISO()
+        };
+        await idbPut(STORES.drafts, d);
+        bumpMomentum(2);
+        toast("Draft saved ✅");
+        await refreshAll();
+      });
+
+      $("#clearDraft").addEventListener("click", () => {
+        if (!allowFast()) return;
+        $("#draftText").value = "";
+        $("#goal").value = "";
+        const badge = $("#toneBadge");
+        badge.className = "pill";
+        badge.textContent = "Tone: —";
+        drawConstellation();
+      });
+
+      $("#copyDraft").addEventListener("click", async () => {
+        if (!allowFast()) return;
+        const text = $("#draftText").value || "";
+        if (!text){ toast("Nothing to copy."); return; }
+        try{
+          await navigator.clipboard.writeText(text);
+          toast("Copied 📋");
+          bumpMomentum(1);
+        }catch(e){
+          toast("Copy blocked by browser.");
+        }
+      });
+
+      $("#scoreDraft").addEventListener("click", () => {
+        if (!allowFast()) return;
+        const text = sanitizeText($("#draftText").value || "", 8000);
+        const t = toneCheck(text);
+        const badge = $("#toneBadge");
+        badge.className = "pill " + (t.color || "");
+        badge.textContent = "Tone: " + t.label;
+        if (t.label.includes("Coercive")) toast("Tone check: soften language, avoid pressure.");
+        else if (t.label.includes("Risky")) toast("Tone check: refine for calm, measurable asks.");
+        else toast("Tone check: looks calm ✅");
+        drawConstellation();
+      });
+
+      // Actions
+      $("#addAction").addEventListener("click", async () => {
+        if (!allowMedium()) return;
+        const type = sanitizeText($("#actionType").value, 80);
+        const note = sanitizeText($("#actionNote").value, 140);
+
+        const a = { id: uid("act"), type, note, when: nowISO() };
+        await idbPut(STORES.actions, a);
+
+        $("#actionNote").value = "";
+        bumpMomentum(2);
+        toast("Action logged 🪴");
+        await refreshAll();
+      });
+
+      $("#clearActions").addEventListener("click", async () => {
+        if (!allowMedium()) return;
+        // delete all actions by iterating
+        const acts = await idbAll(STORES.actions);
+        for (const a of acts){
+          await idbDel(STORES.actions, a.id);
+        }
+        toast("Action log cleared.");
+        await refreshAll();
+      });
+
+      $("#quickAddAction").addEventListener("click", () => {
+        location.hash = "#actions";
+        $("#actionNote").focus();
+      });
+
+      // Settings
+      $("#saveSettings").addEventListener("click", async () => {
+        if (!allowFast()) return;
+        const careStyle = sanitizeText($("#careStyle").value, 80);
+        const dailyGoal = clamp(parseInt($("#dailyGoal").value, 10) || 3, 1, 10);
+        await setSetting("careStyle", careStyle);
+        await setSetting("dailyGoal", dailyGoal);
+        toast("Settings saved ⚙️");
+        bumpMomentum(1);
+        drawConstellation();
+      });
+
+      $("#resetSettings").addEventListener("click", async () => {
+        if (!allowFast()) return;
+        for (const [k,v] of Object.entries(DEFAULT_SETTINGS)){
+          await setSetting(k, v);
+        }
+        const s = await getSettings();
+        $("#careStyle").value = s.careStyle;
+        $("#dailyGoal").value = s.dailyGoal;
+        toast("Settings reset.");
+        await refreshHUD();
+        drawConstellation();
+      });
+
+      // Export / Import
+      $("#exportData").addEventListener("click", async () => {
+        if (!allowFast()) return;
+        await exportState();
+        toast("Exported 📦");
+      });
+
+      $("#importFile").addEventListener("change", async (e) => {
+        if (!allowMedium()) return;
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        await importState(file);
+        e.target.value = "";
+      });
+    }
+
+    /* ---------------------------
+       SECTION: Initialization
+       Tooltip: Boot + wire + initial search index.
+       Outcome: Smooth startup.
+    --------------------------- */
+    (async function init(){
+      try{
+        wire();
+        await boot();
+
+        // Load settings into UI
+        const s = await getSettings();
+        $("#careStyle").value = s.careStyle;
+        $("#dailyGoal").value = s.dailyGoal;
+
+        // Initial search state
+        await runSearch();
+
+        // Initial parallax
+        requestAnimationFrame(parallaxTick);
+
+      }catch(e){
+        // Fail gracefully without console dependency
+        const splashCopy = $("#splashCopy");
+        if (splashCopy){
+          splashCopy.textContent = "Something went wrong initializing local storage. Try reloading, or use Reset local.";
+        }
+        const status = $("#bootStatus");
+        if (status) status.textContent = "BOOT: error";
+      }
+    })();
+
+  })();
+  </script>
+</body>
+</html>
